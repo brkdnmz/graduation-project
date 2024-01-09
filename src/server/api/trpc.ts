@@ -6,7 +6,8 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
+import { TRPCError, initTRPC } from "@trpc/server";
+import { cookies } from "next/headers";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -65,6 +66,44 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
  * @see https://trpc.io/docs/router
  */
 export const createTRPCRouter = t.router;
+export const middleware = t.middleware;
+
+const authenticatedMiddleware = middleware(async ({ ctx, next }) => {
+  const accessToken = cookies().get("access_token")?.value;
+
+  if (!accessToken) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Access token not provided",
+    });
+  }
+
+  const session = await ctx.db.session.findFirst({
+    where: { accessToken },
+    include: { user: true },
+  });
+
+  if (!session) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Invalid access token",
+    });
+  }
+
+  const dateNow = new Date();
+
+  if (session.expiresAt < dateNow) {
+    await ctx.db.session.delete({ where: { accessToken } });
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Access token expired",
+    });
+  }
+
+  return next({
+    ctx: { session },
+  });
+});
 
 /**
  * Public (unauthenticated) procedure
@@ -74,3 +113,6 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
+export const authenticatedProcedure = publicProcedure.use(
+  authenticatedMiddleware,
+);

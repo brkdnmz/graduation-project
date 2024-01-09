@@ -2,25 +2,28 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-    id        Int       @id @default(autoincrement())
-    username  String
-    email     String
-    password  String
-    createdAt DateTime  @default(now())
-    Session   Session[]
+  id        Int       @id @default(autoincrement())
+  username  String
+  email     String
+  password  String
+  createdAt DateTime  @default(now())
+  sessions  Session[]
 }
 
 model Session {
-    userId      Int    @id
-    user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-    accessToken String
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken String   @unique
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
 }

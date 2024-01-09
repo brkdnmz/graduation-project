@@ -42,6 +42,7 @@ export default function Signup() {
 
   const onSubmit: SubmitHandler<SignupForm> = async (data) => {
     try {
+      // TODO: Change to `mutate`
       await createUser.mutateAsync({
         email: data.email,
         password: data.password,

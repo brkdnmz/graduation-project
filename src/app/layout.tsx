@@ -24,7 +24,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
+      <body
+        className={`font-sans ${inter.variable} flex min-h-screen flex-col`}
+      >
         <TRPCReactProvider cookies={cookies().toString()}>
           <Navbar />
           <section className="grow">{children}</section>
