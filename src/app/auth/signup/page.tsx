@@ -37,7 +37,7 @@ export default function Signup() {
   const { formState, register, handleSubmit } = useForm<SignupForm>({
     resolver: zodResolver(signupFormSchema),
   });
-  const createUser = api.user.signUp.useMutation();
+  const createUser = api.auth.signUp.useMutation();
   const router = useRouter();
 
   const onSubmit: SubmitHandler<SignupForm> = async (data) => {

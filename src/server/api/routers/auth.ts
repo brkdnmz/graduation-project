@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
-export const userRouter = createTRPCRouter({
+export const authRouter = createTRPCRouter({
   signUp: publicProcedure
     .input(
       z.object({
