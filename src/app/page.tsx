@@ -1,7 +1,10 @@
+import { SessionDetails } from "./_components/session-details";
+
 export default function Home() {
   return (
-    <main className="flex items-center justify-center">
+    <main>
       <h1>Hi!</h1>
+      <SessionDetails />
     </main>
   );
 }

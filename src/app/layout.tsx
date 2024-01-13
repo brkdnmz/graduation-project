@@ -29,7 +29,9 @@ export default function RootLayout({
       >
         <TRPCReactProvider cookies={cookies().toString()}>
           <Navbar />
-          <section className="grow">{children}</section>
+          <section className="flex grow items-center justify-center">
+            {children}
+          </section>
         </TRPCReactProvider>
       </body>
     </html>
