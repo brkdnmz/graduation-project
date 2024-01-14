@@ -1,12 +1,28 @@
 "use client";
 
+import { TRPCClientError } from "@trpc/client";
 import { api } from "~/trpc/react";
 
 export function useSession() {
   const session = api.session.getSession.useQuery(undefined, {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    retry(failureCount, error) {
+      if (error instanceof TRPCClientError) {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });
 
-  return session;
+  return {
+    ...session,
+    user: session.error ? null : session.data,
+  };
+}
+
+export function useRevalidateSession() {
+  const trpcUtils = api.useUtils();
+
+  return () => trpcUtils.session.invalidate();
 }

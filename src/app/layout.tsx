@@ -3,6 +3,7 @@ import "~/styles/globals.css";
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 
+import { ThemeProvider } from "~/components/theme-provider";
 import { TRPCReactProvider } from "~/trpc/react";
 import { Navbar } from "./_components/navbar";
 
@@ -25,13 +26,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`font-sans ${inter.variable} flex min-h-screen flex-col`}
+        className={`font-sans ${inter.variable} flex min-h-screen flex-col px-4`}
       >
         <TRPCReactProvider cookies={cookies().toString()}>
-          <Navbar />
-          <section className="flex grow items-center justify-center">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Navbar />
             {children}
-          </section>
+          </ThemeProvider>
         </TRPCReactProvider>
       </body>
     </html>

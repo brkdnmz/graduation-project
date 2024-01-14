@@ -93,7 +93,8 @@ const authenticatedMiddleware = middleware(async ({ ctx, next }) => {
   const dateNow = new Date();
 
   if (session.expiresAt < dateNow) {
-    await ctx.db.session.delete({ where: { accessToken } });
+    // .catch() is for ignoring deletion error of non-existent entry.
+    await ctx.db.session.delete({ where: { accessToken } }).catch();
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "Access token expired",

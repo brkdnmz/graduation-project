@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import type { HTMLInputTypeAttribute } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
+import { useRevalidateSession } from "~/hooks/use-session";
 import { api } from "~/trpc/react";
 
 const loginFormSchema = z.object({
@@ -31,17 +32,17 @@ export default function Login() {
   });
   const login = api.session.login.useMutation();
   const router = useRouter();
+  const revalidateSession = useRevalidateSession();
 
   const onSubmit: SubmitHandler<LoginForm> = async (data) => {
     try {
-      const { accessToken, user } = await login.mutateAsync({
+      const { accessToken } = await login.mutateAsync({
         emailOrUsername: data.emailOrUsername,
         password: data.password,
       });
 
       jsCookie.set("access_token", accessToken);
-      console.log(user);
-
+      await revalidateSession();
       // TODO: Redirect to previous page
       router.push("/");
     } catch (error) {
