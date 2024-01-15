@@ -1,12 +1,12 @@
-import { revalidatePath } from "next/cache";
 import { FaPlus } from "react-icons/fa";
+import revalidateHomePage from "~/app/actions";
 import { api } from "~/trpc/server";
 
 export function AddUser() {
   const onAddUser = async () => {
     "use server";
     await api.user.createRandomUser.mutate();
-    revalidatePath("/");
+    void revalidateHomePage();
   };
 
   return (

@@ -13,6 +13,13 @@ export function Navbar() {
       </Link>
 
       <nav className="flex grow items-center justify-end gap-10">
+        <Link
+          href="/contest/create"
+          title="Create Contest"
+          className="flex items-center self-stretch opacity-50 transition-opacity hover:opacity-100"
+        >
+          <h1 className="text-2xl text-slate-300">Create Contest</h1>
+        </Link>
         <AuthButtons />
       </nav>
     </header>

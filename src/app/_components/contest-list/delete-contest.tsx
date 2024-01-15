@@ -2,16 +2,16 @@ import { FaTrash } from "react-icons/fa";
 import revalidateHomePage from "~/app/actions";
 import { api } from "~/trpc/server";
 
-export function DeleteUser({ id }: { id: number }) {
-  const onDeleteUser = async () => {
+export function DeleteContest({ id }: { id: number }) {
+  const onDeleteContest = async () => {
     "use server";
-    await api.user.deleteUser.mutate({ id });
+    await api.contest.delete.mutate({ id });
     void revalidateHomePage();
   };
 
   return (
-    <form action={onDeleteUser}>
-      <button title="Delete user">
+    <form action={onDeleteContest}>
+      <button title="Delete contest">
         <FaTrash color="blue" />
       </button>
     </form>
