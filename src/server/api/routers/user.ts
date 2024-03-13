@@ -29,7 +29,7 @@ export const userRouter = createTRPCRouter({
       allowSpecialCharacters: true,
     });
 
-    await ctx.db.user.create({
+    return ctx.db.user.create({
       data: {
         email,
         username,

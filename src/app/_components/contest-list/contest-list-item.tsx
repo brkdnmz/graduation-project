@@ -6,6 +6,12 @@ export function ContestListItem({
 }: {
   contest: RouterOutputs["contest"]["getAll"][number];
 }) {
+  const displayDate = (date: Date) =>
+    date.toLocaleString(undefined, {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+
   return (
     <li
       key={contest.id}
@@ -15,9 +21,18 @@ export function ContestListItem({
         <li>ID: {contest.id}</li>
         <li>Name: {contest.name}</li>
         <li>Type: {contest.type}</li>
-        <li>Starts at: {contest.startsAt.toLocaleString()}</li>
-        <li>Ends at: {contest.endsAt.toLocaleString()}</li>
-        <li>Created at: {contest.createdAt.toLocaleString()}</li>
+        <li>
+          <span className="inline-block w-20">Starts at:</span>{" "}
+          {displayDate(contest.startsAt)}
+        </li>
+        <li>
+          <span className="inline-block w-20">Ends at:</span>{" "}
+          {displayDate(contest.endsAt)}
+        </li>
+        <li>
+          <span className="inline-block w-20">Created at:</span>{" "}
+          {displayDate(contest.createdAt)}
+        </li>
       </ul>
       <DeleteContest id={contest.id} />
     </li>

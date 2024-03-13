@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TRPCClientError } from "@trpc/client";
 import { useRouter } from "next/navigation";
 import type { HTMLInputTypeAttribute } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
@@ -39,20 +38,27 @@ export default function Signup() {
   });
   const createUser = api.auth.signUp.useMutation();
   const router = useRouter();
+  const trpcUtils = api.useUtils();
 
   const onSubmit: SubmitHandler<SignupForm> = async (data) => {
-    try {
-      // TODO: Change to `mutate`
-      await createUser.mutateAsync({
+    createUser.mutate(
+      {
         email: data.email,
         password: data.password,
         username: data.username,
-      });
-      // TODO: Redirect to previous page
-      router.push("/");
-    } catch (error) {
-      if (error instanceof TRPCClientError) alert(error.message);
-    }
+      },
+      {
+        onSuccess: () => {
+          void trpcUtils.user.getAll.invalidate();
+
+          // TODO: Redirect to previous page
+          router.push("/");
+        },
+        onError: (error) => {
+          alert(error.message);
+        },
+      },
+    );
   };
 
   return (

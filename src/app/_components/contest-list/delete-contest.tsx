@@ -1,12 +1,19 @@
 import { FaTrash } from "react-icons/fa";
-import revalidateHomePage from "~/app/actions";
-import { api } from "~/trpc/server";
+import { api } from "~/trpc/react";
 
 export function DeleteContest({ id }: { id: number }) {
+  const deleteContest = api.contest.delete.useMutation();
+  const trpcUtils = api.useUtils();
+
   const onDeleteContest = async () => {
-    "use server";
-    await api.contest.delete.mutate({ id });
-    void revalidateHomePage();
+    deleteContest.mutate(
+      { id },
+      {
+        onSettled: () => {
+          void trpcUtils.contest.getAll.invalidate();
+        },
+      },
+    );
   };
 
   return (

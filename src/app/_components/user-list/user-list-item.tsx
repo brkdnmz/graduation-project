@@ -1,6 +1,8 @@
 import type { RouterOutputs } from "~/trpc/shared";
 import { DeleteUser } from "./delete-user";
 
+export const revalidate = 0;
+
 export function UserListItem({
   user,
 }: {
@@ -15,7 +17,13 @@ export function UserListItem({
         <li>ID: {user.id}</li>
         <li>Email: {user.email}</li>
         <li>Username: {user.username}</li>
-        <li>Registered at: {user.createdAt.toLocaleString()}</li>
+        <li>
+          Registered at:{" "}
+          {user.createdAt.toLocaleString(undefined, {
+            dateStyle: "medium",
+            timeStyle: "medium",
+          })}
+        </li>
       </ul>
       <DeleteUser id={user.id} />
     </li>
