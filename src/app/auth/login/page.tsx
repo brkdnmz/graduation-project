@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TRPCClientError } from "@trpc/client";
 import jsCookie from "js-cookie";
 import { useRouter } from "next/navigation";
 import type { HTMLInputTypeAttribute } from "react";
@@ -35,19 +34,26 @@ export default function Login() {
   const revalidateSession = useRevalidateSession();
 
   const onSubmit: SubmitHandler<LoginForm> = async (data) => {
-    try {
-      const { accessToken } = await login.mutateAsync({
+    login.mutate(
+      {
         emailOrUsername: data.emailOrUsername,
         password: data.password,
-      });
+      },
+      {
+        onSuccess: ({ accessToken, expiresAt }) => {
+          jsCookie.set("access_token", accessToken, {
+            expires: expiresAt,
+          });
 
-      jsCookie.set("access_token", accessToken);
-      await revalidateSession();
-      // TODO: Redirect to previous page
-      router.push("/");
-    } catch (error) {
-      if (error instanceof TRPCClientError) alert(error.message);
-    }
+          void revalidateSession();
+          // TODO: Redirect to previous page
+          router.push("/");
+        },
+        onError: (error) => {
+          alert(error.message);
+        },
+      },
+    );
   };
 
   return (

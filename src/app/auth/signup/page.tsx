@@ -1,10 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import jsCookie from "js-cookie";
 import { useRouter } from "next/navigation";
 import type { HTMLInputTypeAttribute } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
+import { useRevalidateSession } from "~/hooks/use-session";
 import { api } from "~/trpc/react";
 
 const signupFormSchema = z
@@ -36,12 +38,14 @@ export default function Signup() {
   const { formState, register, handleSubmit } = useForm<SignupForm>({
     resolver: zodResolver(signupFormSchema),
   });
-  const createUser = api.auth.signUp.useMutation();
+  const signUp = api.auth.signUp.useMutation();
   const router = useRouter();
   const trpcUtils = api.useUtils();
+  const login = api.session.login.useMutation();
+  const revalidateSession = useRevalidateSession();
 
   const onSubmit: SubmitHandler<SignupForm> = async (data) => {
-    createUser.mutate(
+    signUp.mutate(
       {
         email: data.email,
         password: data.password,
@@ -51,8 +55,26 @@ export default function Signup() {
         onSuccess: () => {
           void trpcUtils.user.getAll.invalidate();
 
-          // TODO: Redirect to previous page
-          router.push("/");
+          login.mutate(
+            {
+              emailOrUsername: data.email,
+              password: data.password,
+            },
+            {
+              onSuccess: ({ accessToken, expiresAt }) => {
+                jsCookie.set("access_token", accessToken, {
+                  expires: expiresAt,
+                });
+
+                void revalidateSession();
+                // TODO: Redirect to previous page
+                router.push("/");
+              },
+              onError: (error) => {
+                alert(error.message);
+              },
+            },
+          );
         },
         onError: (error) => {
           alert(error.message);

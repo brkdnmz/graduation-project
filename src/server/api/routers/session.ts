@@ -61,7 +61,7 @@ export const sessionRouter = createTRPCRouter({
         },
       });
 
-      return { accessToken: newAccessToken, user };
+      return { accessToken: newAccessToken, expiresAt: yearLater, user };
     }),
 
   // deleteSession
