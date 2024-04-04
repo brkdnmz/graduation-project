@@ -7,6 +7,7 @@ export function useSession() {
   const session = api.session.getSession.useQuery(undefined, {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    retryOnMount: false,
     retry(failureCount, error) {
       if (error instanceof TRPCClientError) {
         return false;

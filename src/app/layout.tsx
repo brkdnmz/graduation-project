@@ -7,6 +7,7 @@ import { ThemeProvider } from "~/components/theme-provider";
 import { Toaster } from "~/components/ui/toaster";
 import { TRPCReactProvider } from "~/trpc/react";
 import { Navbar } from "./_components/navbar";
+import { SessionLoader } from "./_components/session-loader";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,9 +37,11 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Navbar />
-            {children}
-            <Toaster />
+            <SessionLoader>
+              <Navbar />
+              {children}
+              <Toaster />
+            </SessionLoader>
           </ThemeProvider>
         </TRPCReactProvider>
       </body>
