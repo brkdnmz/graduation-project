@@ -10,7 +10,7 @@ import { api } from "~/trpc/react";
 
 export function ProfileButton() {
   const { user } = useSession();
-  const logOut = api.session.logout.useMutation();
+  const logOut = api.auth.logout.useMutation();
   const revalidateSession = useRevalidateSession();
 
   const onLogOut = async () => {

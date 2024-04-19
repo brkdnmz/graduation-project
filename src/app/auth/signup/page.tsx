@@ -27,7 +27,7 @@ export default function Signup() {
   const signUp = api.auth.signUp.useMutation();
   const router = useRouter();
   const trpcUtils = api.useUtils();
-  const login = api.session.login.useMutation();
+  const login = api.auth.login.useMutation();
   const revalidateSession = useRevalidateSession();
 
   const onSubmit: SubmitHandler<SignupForm> = async (data) => {

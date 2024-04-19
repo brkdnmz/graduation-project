@@ -17,7 +17,7 @@ const loginFormSchema = z.object({
 type LoginForm = z.infer<typeof loginFormSchema>;
 
 export default function Login() {
-  const login = api.session.login.useMutation();
+  const login = api.auth.login.useMutation();
   const router = useRouter();
   const revalidateSession = useRevalidateSession();
 
