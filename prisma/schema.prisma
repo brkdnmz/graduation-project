@@ -17,6 +17,7 @@ model User {
   password  String
   createdAt DateTime  @default(now())
   sessions  Session[]
+  Contest   Contest[]
 }
 
 model Session {
@@ -30,9 +31,11 @@ model Session {
 
 model Contest {
   id        Int      @id @default(autoincrement())
+  creatorId Int
   name      String
   type      String
   createdAt DateTime @default(now())
   startsAt  DateTime
   endsAt    DateTime
+  creator   User     @relation(fields: [creatorId], references: [id])
 }

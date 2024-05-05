@@ -7,10 +7,6 @@
     @apply min-h-screen bg-gradient-to-br from-slate-900 to-sky-950;
   }
 
-  * {
-    @apply text-slate-300;
-  }
-
   h1 {
     @apply text-5xl;
   }
@@ -19,6 +15,12 @@
   }
   h3 {
     @apply text-3xl;
+  }
+  h4 {
+    @apply text-2xl;
+  }
+  h5 {
+    @apply text-xl;
   }
 }
 

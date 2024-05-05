@@ -1,8 +1,12 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import {
+  authenticatedProcedure,
+  createTRPCRouter,
+  publicProcedure,
+} from "../trpc";
 
 export const contestRouter = createTRPCRouter({
-  create: publicProcedure
+  create: authenticatedProcedure
     .input(
       z
         .object({
@@ -26,12 +30,46 @@ export const contestRouter = createTRPCRouter({
           type: input.contestType,
           startsAt: input.startsAt,
           endsAt: input.endsAt,
+          creatorId: ctx.session.userId,
         },
       });
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.contest.findMany();
+    return ctx.db.contest.findMany({ include: { creator: true } });
   }),
+  get: publicProcedure
+    .input(
+      z.object({
+        type: z.union([
+          z.literal("ongoing"),
+          z.literal("upcoming"),
+          z.literal("ended"),
+        ]),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const dateNow = new Date();
+
+      switch (input.type) {
+        case "ongoing":
+          return ctx.db.contest.findMany({
+            where: { startsAt: { lte: dateNow }, endsAt: { gt: dateNow } },
+            include: { creator: true },
+          });
+        case "upcoming":
+          return ctx.db.contest.findMany({
+            where: { startsAt: { gt: dateNow }, endsAt: { gt: dateNow } },
+            include: { creator: true },
+          });
+        case "ended":
+          return ctx.db.contest.findMany({
+            where: { startsAt: { lt: dateNow }, endsAt: { lte: dateNow } },
+            include: { creator: true },
+          });
+        default:
+          break;
+      }
+    }),
   getById: publicProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {

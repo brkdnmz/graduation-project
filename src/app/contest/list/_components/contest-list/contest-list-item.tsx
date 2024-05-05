@@ -1,5 +1,4 @@
 import type { RouterOutputs } from "~/trpc/shared";
-import { DeleteContest } from "./delete-contest";
 
 export function ContestListItem({
   contest,
@@ -33,8 +32,12 @@ export function ContestListItem({
           <span className="inline-block w-20">Created at:</span>{" "}
           {displayDate(contest.createdAt)}
         </li>
+        <li>
+          <span className="inline-block w-20">Created by:</span>{" "}
+          {contest.creator.username}
+        </li>
       </ul>
-      <DeleteContest id={contest.id} />
+      {/* <DeleteContest id={contest.id} /> */}
     </li>
   );
 }
