@@ -36,7 +36,6 @@ export default function Login() {
 
           // TODO: Redirect to previous page
           router.push("/");
-          console.log("1");
 
           void revalidateSession();
           toast({
