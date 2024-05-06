@@ -29,6 +29,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`font-sans ${inter.variable} flex min-h-screen flex-col`}
+        suppressHydrationWarning
       >
         <TRPCReactProvider cookies={cookies().toString()}>
           <ThemeProvider

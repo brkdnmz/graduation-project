@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
+import { toast } from "~/components/ui/use-toast";
 import { useRevalidateSession } from "~/hooks/use-session";
 import { api } from "~/trpc/react";
 import { GenericAuthForm } from "../_components/generic-auth-form";
@@ -33,12 +34,20 @@ export default function Login() {
             expires: expiresAt,
           });
 
-          void revalidateSession();
           // TODO: Redirect to previous page
           router.push("/");
+          console.log("1");
+
+          void revalidateSession();
+          toast({
+            variant: "default",
+            title: "Logged in",
+            description: "Successfully logged in",
+            duration: 3000,
+          });
         },
-        onError: (error) => {
-          alert(error.message);
+        onError: () => {
+          alert("An error occurred");
         },
       },
     );

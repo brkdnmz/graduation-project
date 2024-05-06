@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ProfileButton } from "./profile-button";
-import { VisibleIfAuthorized } from "./visible-if-authorized";
 
 export function Navbar() {
   return (
@@ -14,15 +13,13 @@ export function Navbar() {
       </Link>
 
       <nav className="flex grow items-center gap-10">
-        <VisibleIfAuthorized>
-          <Link
-            href="/contest/list"
-            title="Contests Page"
-            className="flex items-center self-stretch opacity-50 transition-opacity hover:opacity-100"
-          >
-            <h1 className="text-2xl text-slate-300">Contests</h1>
-          </Link>
-        </VisibleIfAuthorized>
+        <Link
+          href="/contest/list"
+          title="Contests Page"
+          className="flex items-center self-stretch opacity-50 transition-opacity hover:opacity-100"
+        >
+          <h1 className="text-2xl text-slate-300">Contests</h1>
+        </Link>
       </nav>
       <ProfileButton />
     </header>

@@ -6,22 +6,24 @@ import { Spinner } from "~/components/spinner";
 import { toast } from "~/components/ui/use-toast";
 import { useSession } from "~/hooks/use-session";
 
-export function AuthorizedRoute({ children }: PropsWithChildren) {
+export function UnauthorizedRoute({ children }: PropsWithChildren) {
   const session = useSession();
   const router = useRouter();
 
+  // TODO: Fix triggering after login
+
   useEffect(() => {
-    if (!session.user) {
-      router.push("/auth/login");
+    if (session.user) {
+      router.push("/");
       toast({
         variant: "destructive",
-        title: "Unauthorized",
-        description: "You must be logged in",
+        title: "Already logged in",
+        description: "You must be logged out",
         duration: 3000,
       });
     }
   }, [router, session.user]);
 
   if (session.isLoading) return <Spinner />;
-  return !session.user ? null : children;
+  return session.user ? null : children;
 }

@@ -35,7 +35,15 @@ export const contestRouter = createTRPCRouter({
       });
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.contest.findMany({ include: { creator: true } });
+    return ctx.db.contest.findMany({
+      include: {
+        creator: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
   }),
   get: publicProcedure
     .input(
@@ -54,17 +62,35 @@ export const contestRouter = createTRPCRouter({
         case "ongoing":
           return ctx.db.contest.findMany({
             where: { startsAt: { lte: dateNow }, endsAt: { gt: dateNow } },
-            include: { creator: true },
+            include: {
+              creator: {
+                select: {
+                  username: true,
+                },
+              },
+            },
           });
         case "upcoming":
           return ctx.db.contest.findMany({
             where: { startsAt: { gt: dateNow }, endsAt: { gt: dateNow } },
-            include: { creator: true },
+            include: {
+              creator: {
+                select: {
+                  username: true,
+                },
+              },
+            },
           });
         case "ended":
           return ctx.db.contest.findMany({
             where: { startsAt: { lt: dateNow }, endsAt: { lte: dateNow } },
-            include: { creator: true },
+            include: {
+              creator: {
+                select: {
+                  username: true,
+                },
+              },
+            },
           });
         default:
           break;

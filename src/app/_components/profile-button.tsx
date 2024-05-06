@@ -2,6 +2,7 @@
 
 import { CircleUserRound, LogOutIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,17 +11,32 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import { toast } from "~/components/ui/use-toast";
 import { useRevalidateSession, useSession } from "~/hooks/use-session";
 import { api } from "~/trpc/react";
 
 export function ProfileButton() {
   const { user } = useSession();
+  const router = useRouter();
   const logOut = api.auth.logout.useMutation();
   const revalidateSession = useRevalidateSession();
 
   const onLogOut = async () => {
-    await logOut.mutateAsync();
-    await revalidateSession();
+    logOut.mutate(undefined, {
+      onSuccess: () => {
+        router.push("/");
+        void revalidateSession();
+        toast({
+          variant: "default",
+          title: "Logged out",
+          description: "Successfully logged out",
+          duration: 3000,
+        });
+      },
+      onError: () => {
+        alert("An error occurred");
+      },
+    });
   };
 
   return (
