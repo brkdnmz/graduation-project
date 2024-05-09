@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
+import revalidateCache from "~/app/actions";
 import { toast } from "~/components/ui/use-toast";
 import { useRevalidateSession } from "~/hooks/use-session";
 import { api } from "~/trpc/react";
@@ -34,10 +35,12 @@ export default function Login() {
             expires: expiresAt,
           });
 
+          void revalidateCache();
+          void revalidateSession();
+
           // TODO: Redirect to previous page
           router.push("/");
 
-          void revalidateSession();
           toast({
             variant: "default",
             title: "Logged in",

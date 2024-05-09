@@ -14,6 +14,7 @@ import {
 import { toast } from "~/components/ui/use-toast";
 import { useRevalidateSession, useSession } from "~/hooks/use-session";
 import { api } from "~/trpc/react";
+import revalidateCache from "../actions";
 
 export function ProfileButton() {
   const { user } = useSession();
@@ -24,8 +25,9 @@ export function ProfileButton() {
   const onLogOut = async () => {
     logOut.mutate(undefined, {
       onSuccess: () => {
-        router.push("/");
         void revalidateSession();
+        void revalidateCache();
+        router.push("/");
         toast({
           variant: "default",
           title: "Logged out",
@@ -87,36 +89,5 @@ export function ProfileButton() {
         )}
       </DropdownMenuContent>
     </DropdownMenu>
-    // <Popover>
-    //   <PopoverTrigger>
-    //     {user ? user.username : <CircleUserRound />}
-    //   </PopoverTrigger>
-    //   <PopoverContent className="flex w-fit flex-col gap-2">
-    //     {user && (
-    //       <>
-    //         {user?.email}
-    //         <button onClick={onLogOut}>Log Out</button>
-    //       </>
-    //     )}
-    //     {!user && (
-    //       <>
-    //         <Link
-    //           href="/auth/signup"
-    //           title="Sign Up"
-    //           className="flex items-center self-stretch opacity-50 transition-opacity hover:opacity-100"
-    //         >
-    //           Sign Up
-    //         </Link>
-    //         <Link
-    //           href="/auth/login"
-    //           title="Log In"
-    //           className="flex items-center self-stretch opacity-50 transition-opacity hover:opacity-100"
-    //         >
-    //           Log In
-    //         </Link>
-    //       </>
-    //     )}
-    //   </PopoverContent>
-    // </Popover>
   );
 }

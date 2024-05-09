@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
+import revalidateCache from "~/app/actions";
 import { useRevalidateSession } from "~/hooks/use-session";
 import { api } from "~/trpc/react";
 import { GenericAuthForm } from "../_components/generic-auth-form";
@@ -40,6 +41,7 @@ export default function Signup() {
       {
         onSuccess: () => {
           void trpcUtils.user.getAll.invalidate();
+          void revalidateCache();
 
           login.mutate(
             {
