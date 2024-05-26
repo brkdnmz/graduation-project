@@ -1,3 +1,5 @@
+import type { Prisma } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import {
   authenticatedProcedure,
@@ -58,48 +60,75 @@ export const contestRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const dateNow = new Date();
 
+      let queryWhere: Prisma.ContestFindManyArgs["where"];
+
       switch (input.type) {
         case "ongoing":
-          return ctx.db.contest.findMany({
-            where: { startsAt: { lte: dateNow }, endsAt: { gt: dateNow } },
-            include: {
-              creator: {
-                select: {
-                  username: true,
-                },
-              },
-            },
-          });
-        case "upcoming":
-          return ctx.db.contest.findMany({
-            where: { startsAt: { gt: dateNow }, endsAt: { gt: dateNow } },
-            include: {
-              creator: {
-                select: {
-                  username: true,
-                },
-              },
-            },
-          });
-        case "ended":
-          return ctx.db.contest.findMany({
-            where: { startsAt: { lt: dateNow }, endsAt: { lte: dateNow } },
-            include: {
-              creator: {
-                select: {
-                  username: true,
-                },
-              },
-            },
-          });
-        default:
+          queryWhere = { startsAt: { lte: dateNow }, endsAt: { gt: dateNow } };
           break;
+        case "upcoming":
+          queryWhere = { startsAt: { gt: dateNow }, endsAt: { gt: dateNow } };
+          break;
+        case "ended":
+          queryWhere = { startsAt: { lt: dateNow }, endsAt: { lte: dateNow } };
+          break;
+        default:
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Invalid contest type",
+          });
       }
+
+      return ctx.db.contest.findMany({
+        where: queryWhere,
+        include: {
+          creator: {
+            select: {
+              username: true,
+            },
+          },
+        },
+      });
     }),
   getById: publicProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
       return ctx.db.contest.findUnique({ where: { id: input.id } });
+    }),
+  registerCurrentUser: authenticatedProcedure
+    .input(z.object({ contestId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const contest = await ctx.db.contest.findUnique({
+        where: { id: input.contestId },
+        include: { registeredUsers: true },
+      });
+
+      if (!contest)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Contest not found",
+        });
+
+      if (
+        contest.registeredUsers.map(({ id }) => id).includes(ctx.session.userId)
+      )
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Already registered",
+        });
+
+      const dateNow = new Date();
+
+      if (dateNow >= contest.endsAt)
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Contest ended",
+        });
+
+      return ctx.db.contest.update({
+        where: { id: input.contestId },
+        data: { registeredUsers: { connect: { id: ctx.session.userId } } },
+      });
     }),
   delete: publicProcedure
     .input(z.object({ id: z.number() }))

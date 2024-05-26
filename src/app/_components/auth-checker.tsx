@@ -18,7 +18,7 @@ export async function AuthChecker({ children, permitIf }: AuthCheckerProps) {
 
   // redirect internally throws an error so it should be called outside of try/catch blocks.
   // https://nextjs.org/docs/app/building-your-application/routing/redirecting#redirect-function
-  if (isAuthorized && permitIf === "unauthorized") redirect("/?error=asdsa");
+  if (isAuthorized && permitIf === "unauthorized") redirect("/");
   if (!isAuthorized && permitIf === "authorized") redirect("/auth/login");
   return <>{children}</>;
 }

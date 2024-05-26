@@ -11,13 +11,14 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  username  String
-  email     String
-  password  String
-  createdAt DateTime  @default(now())
-  sessions  Session[]
-  Contest   Contest[]
+  id                 Int       @id @default(autoincrement())
+  username           String
+  email              String
+  password           String
+  createdAt          DateTime  @default(now())
+  sessions           Session[]
+  createdContests    Contest[] @relation(name: "UserCreatedContests")
+  registeredContests Contest[] @relation(name: "UserRegisteredContests")
 }
 
 model Session {
@@ -30,12 +31,13 @@ model Session {
 }
 
 model Contest {
-  id        Int      @id @default(autoincrement())
-  creatorId Int
-  name      String
-  type      String
-  createdAt DateTime @default(now())
-  startsAt  DateTime
-  endsAt    DateTime
-  creator   User     @relation(fields: [creatorId], references: [id])
+  id              Int      @id @default(autoincrement())
+  creatorId       Int
+  name            String
+  type            String
+  createdAt       DateTime @default(now())
+  startsAt        DateTime
+  endsAt          DateTime
+  creator         User     @relation(name: "UserCreatedContests", fields: [creatorId], references: [id])
+  registeredUsers User[]   @relation(name: "UserRegisteredContests")
 }

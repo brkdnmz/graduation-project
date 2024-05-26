@@ -48,8 +48,15 @@ export default function Login() {
             duration: 3000,
           });
         },
-        onError: () => {
-          alert("An error occurred");
+        onError: (error) => {
+          if (error.data?.code === "FORBIDDEN")
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: error.message,
+              duration: 3000,
+            });
+          else alert("An error occurred");
         },
       },
     );
