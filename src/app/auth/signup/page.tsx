@@ -31,7 +31,7 @@ export default function Signup() {
   const login = api.auth.login.useMutation();
   const revalidateSession = useRevalidateSession();
 
-  const onSubmit: SubmitHandler<SignupForm> = async (data) => {
+  const onSubmit: SubmitHandler<SignupForm> = (data) => {
     signUp.mutate(
       {
         email: data.email,

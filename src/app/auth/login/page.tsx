@@ -23,7 +23,7 @@ export default function Login() {
   const router = useRouter();
   const revalidateSession = useRevalidateSession();
 
-  const onSubmit: SubmitHandler<LoginForm> = async (data) => {
+  const onSubmit: SubmitHandler<LoginForm> = (data) => {
     login.mutate(
       {
         emailOrUsername: data.emailOrUsername,
