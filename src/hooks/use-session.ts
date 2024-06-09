@@ -1,6 +1,7 @@
 "use client";
 
 import { TRPCClientError } from "@trpc/client";
+import { useCallback } from "react";
 import { api } from "~/trpc/react";
 
 export function useSession() {
@@ -25,5 +26,5 @@ export function useSession() {
 export function useRevalidateSession() {
   const trpcUtils = api.useUtils();
 
-  return () => trpcUtils.session.invalidate();
+  return useCallback(() => trpcUtils.session.invalidate(), [trpcUtils.session]);
 }

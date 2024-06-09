@@ -7,7 +7,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
@@ -15,6 +14,8 @@ import { toast } from "~/components/ui/use-toast";
 import { useRevalidateSession, useSession } from "~/hooks/use-session";
 import { api } from "~/trpc/react";
 import revalidateCache from "../actions";
+import { ProfilePicture } from "./profile-picture";
+import { UsernameLink } from "./username-link";
 
 export function ProfileButton() {
   const { user } = useSession();
@@ -42,17 +43,29 @@ export function ProfileButton() {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger type="button" className="outline-none">
-        <div className="rounded-full p-0.5 transition hover:bg-slate-400/20">
-          <CircleUserRound />
-        </div>
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger
+        type="button"
+        className="flex items-center justify-center outline-none"
+      >
+        {!user ? (
+          <div className="rounded-full opacity-50 transition hover:opacity-100">
+            <CircleUserRound size={40} />
+          </div>
+        ) : (
+          <ProfilePicture
+            userId={user.id}
+            size={40}
+            className="transition hover:brightness-75"
+          />
+        )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent side="bottom" className="mr-4">
+      <DropdownMenuContent side="bottom" align="end">
         {user && (
           <>
-            <DropdownMenuLabel>{user?.username}</DropdownMenuLabel>
-            <DropdownMenuLabel>{user?.email}</DropdownMenuLabel>
+            <DropdownMenuItem asChild>
+              <UsernameLink username={user.username} />
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <button
