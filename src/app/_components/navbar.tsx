@@ -4,11 +4,11 @@ import { ProfileButton } from "./profile-button";
 
 export function Navbar() {
   return (
-    <header className="container flex items-center py-4">
+    <header className="flex items-center py-4">
       <Link
         href="/"
         title="Return to home page"
-        className="mr-4 flex items-center self-stretch px-2 py-1 opacity-50 transition-opacity hover:opacity-100"
+        className="mr-4 flex items-center self-stretch py-1 pr-2 opacity-50 transition-opacity hover:opacity-100"
       >
         <h1 className="text-2xl font-extrabold text-slate-300">CompeVision</h1>
       </Link>

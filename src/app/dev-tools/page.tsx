@@ -17,7 +17,7 @@ export default async function DevToolsPage() {
   };
 
   return (
-    <ul className="container">
+    <ul>
       <li className="flex flex-col gap-3">
         <ul className="max-h-40 w-fit overflow-auto rounded-lg border p-3">
           {users.map((user) => (

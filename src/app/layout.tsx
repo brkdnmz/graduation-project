@@ -27,10 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`font-sans ${inter.variable} flex min-h-screen flex-col`}
-        suppressHydrationWarning
-      >
+      <body className={`font-sans ${inter.variable}`} suppressHydrationWarning>
         <TRPCReactProvider cookies={cookies().toString()}>
           <ThemeProvider
             attribute="class"
@@ -39,8 +36,11 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <SessionLoader>
-              <Navbar />
-              {children}
+              <div className="container flex min-h-screen flex-col">
+                <Navbar />
+                {/* <BreadcrumbNav /> */}
+                {children}
+              </div>
               <Toaster />
             </SessionLoader>
           </ThemeProvider>

@@ -19,29 +19,6 @@ const publicUserFields = {
 } satisfies Prisma.UserSelect;
 
 export const userRouter = createTRPCRouter({
-  getUserById: publicProcedure
-    .input(z.object({ id: z.number().nullish() }))
-    .query(async ({ ctx, input }) => {
-      // null or undefined
-      if (input.id == undefined) return null;
-      const user = await ctx.db.user.findFirst({
-        where: { id: input.id },
-        select: publicUserFields,
-      });
-      if (!user) return null;
-      return user;
-    }),
-  getUserByUsername: publicProcedure
-    .input(z.object({ username: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const user = await ctx.db.user.findFirst({
-        where: { username: input.username },
-        select: publicUserFields,
-      });
-      if (!user) return null;
-      return user;
-    }),
-
   getUser: publicProcedure
     .input(
       z.object({ id: z.number().optional(), username: z.string().optional() }),
