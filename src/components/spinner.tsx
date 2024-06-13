@@ -5,5 +5,5 @@ type SpinnerProps = {
 };
 
 export function Spinner({ size }: SpinnerProps) {
-  return <Loader2 className="animate-spin" size={size ?? 100} />;
+  return <Loader2 className="animate-spin text-slate-600" size={size ?? 100} />;
 }

@@ -21,6 +21,7 @@ export function ProfilePicture({
   return (
     <div
       className={cn(className, "relative aspect-square rounded-full")}
+      title={user?.username}
       style={{ height: size }}
     >
       <Image

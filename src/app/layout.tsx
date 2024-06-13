@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { ThemeProvider } from "~/components/theme-provider";
 import { Toaster } from "~/components/ui/toaster";
 import { TRPCReactProvider } from "~/trpc/react";
+import { BreadcrumbNav } from "./_components/breadcrumb-nav";
 import { Navbar } from "./_components/navbar";
 import { SessionLoader } from "./_components/session-loader";
 
@@ -36,10 +37,12 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <SessionLoader>
-              <div className="container flex min-h-screen flex-col">
+              <div className="flex min-h-screen flex-col">
                 <Navbar />
-                {/* <BreadcrumbNav /> */}
-                {children}
+                <div className="container flex flex-auto flex-col">
+                  <BreadcrumbNav />
+                  {children}
+                </div>
               </div>
               <Toaster />
             </SessionLoader>
