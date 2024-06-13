@@ -46,10 +46,10 @@ export function ProfileButton() {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger
         type="button"
-        className="flex items-center justify-center outline-none"
+        className="flex items-center justify-center rounded-full outline-none"
       >
         {!user ? (
-          <div className="rounded-full opacity-50 transition hover:opacity-100">
+          <div className="opacity-50 transition hover:opacity-100">
             <CircleUserRound size={40} />
           </div>
         ) : (
@@ -57,6 +57,7 @@ export function ProfileButton() {
             userId={user.id}
             size={40}
             className="transition hover:brightness-75"
+            title={user.username}
           />
         )}
       </DropdownMenuTrigger>

@@ -30,7 +30,7 @@ export function ChangeableProfilePicture({
       <DialogTrigger asChild>
         <button
           className="relative overflow-hidden rounded-full transition hover:brightness-75"
-          title="Update profile picture"
+          title="Change profile picture"
         >
           <ProfilePicture userId={userId} size={size} />
         </button>

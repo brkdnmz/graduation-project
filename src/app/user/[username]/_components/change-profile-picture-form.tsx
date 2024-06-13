@@ -9,12 +9,13 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { toast } from "~/components/ui/use-toast";
 import { api } from "~/trpc/react";
+import { UploadedPicturePreview } from "./uploaded-picture-preview";
 
 const changeProfilePictureFormSchema = z.object({
   newProfilePicture: z
     .instanceof(File)
-    .refine((file) => file.size > 0, "Please upload a valid image")
-    .transform(async (file) => new Uint8Array(await file.arrayBuffer())),
+    .refine((file) => file.type.startsWith("image"), "File must be an image")
+    .refine((file) => file.size > 0, "Image file size must be greater than 0"),
 });
 
 type ChangeProfilePictureForm = z.infer<typeof changeProfilePictureFormSchema>;
@@ -28,18 +29,22 @@ export function ChangeProfilePictureForm({
   userId,
   onChangePicture,
 }: ChangeProfilePictureFormProps) {
-  const { handleSubmit, control } = useForm<ChangeProfilePictureForm>({
+  const { handleSubmit, control, watch } = useForm<ChangeProfilePictureForm>({
     resolver: zodResolver(changeProfilePictureFormSchema),
   });
   const updateProfilePicture = api.user.updateProfilePicture.useMutation();
   const router = useRouter();
   const trpcUtils = api.useUtils();
 
-  const onUpdateProfilePicture: SubmitHandler<ChangeProfilePictureForm> = (
-    data,
-  ) => {
+  const uploadedPicture = watch("newProfilePicture");
+
+  const onUpdateProfilePicture: SubmitHandler<
+    ChangeProfilePictureForm
+  > = async (data) => {
+    const imgBytes = new Uint8Array(await data.newProfilePicture.arrayBuffer());
+
     updateProfilePicture.mutate(
-      { userId, newProfilePicture: data.newProfilePicture },
+      { userId, newProfilePicture: imgBytes },
       {
         onSuccess: () => {
           router.refresh();
@@ -78,6 +83,8 @@ export function ChangeProfilePictureForm({
         console.log(errors);
       })}
     >
+      <UploadedPicturePreview uploadedPicture={uploadedPicture} />
+
       <Controller
         control={control}
         name="newProfilePicture"

@@ -1,5 +1,6 @@
 import type { User } from "@prisma/client";
 import Image from "next/image";
+import type { HTMLProps } from "react";
 import { useUser } from "~/hooks/use-user";
 import { cn } from "~/lib/utils";
 
@@ -7,12 +8,13 @@ type ProfilePictureProps = {
   userId: User["id"];
   size?: number;
   className?: string;
-};
+} & HTMLProps<HTMLDivElement>;
 
 export function ProfilePicture({
   userId,
   size = 200,
   className,
+  ...rest
 }: ProfilePictureProps) {
   const { data: user, isLoading } = useUser({ userId });
 
@@ -21,8 +23,8 @@ export function ProfilePicture({
   return (
     <div
       className={cn(className, "relative aspect-square rounded-full")}
-      title={user?.username}
       style={{ height: size }}
+      {...rest}
     >
       <Image
         src={
