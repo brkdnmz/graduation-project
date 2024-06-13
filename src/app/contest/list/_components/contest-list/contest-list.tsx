@@ -5,16 +5,14 @@ import { useState } from "react";
 import { VisibleIfAuthorized } from "~/app/_components/visible-if-authorized";
 import { Spinner } from "~/components/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { api } from "~/trpc/react";
+import { contestCategories, type ContestCategory } from "~/types/contest";
+import { useContests } from "../../_hooks/use-contests";
 import { ContestListItem } from "./contest-list-item";
 import { CreateContestButton } from "./create-contest-button";
 
-const contestCategories = ["ongoing", "upcoming", "ended"] as const;
-
 export function ContestList() {
-  const [category, setCategory] =
-    useState<(typeof contestCategories)[number]>("ongoing");
-  const contests = api.contest.get.useQuery({ type: category });
+  const [category, setCategory] = useState<ContestCategory>("ongoing");
+  const contests = useContests(category);
 
   return (
     <div className="rounded-xl bg-slate-900 p-4">

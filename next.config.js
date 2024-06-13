@@ -13,6 +13,15 @@ const config = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/contest",
+        destination: "/contest/list",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default config;

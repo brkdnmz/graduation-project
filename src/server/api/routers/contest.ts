@@ -1,6 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { contestCategories } from "~/types/contest";
 import {
   authenticatedProcedure,
   createTRPCRouter,
@@ -50,11 +51,7 @@ export const contestRouter = createTRPCRouter({
   get: publicProcedure
     .input(
       z.object({
-        type: z.union([
-          z.literal("ongoing"),
-          z.literal("upcoming"),
-          z.literal("ended"),
-        ]),
+        type: z.enum(contestCategories),
       }),
     )
     .query(async ({ ctx, input }) => {
