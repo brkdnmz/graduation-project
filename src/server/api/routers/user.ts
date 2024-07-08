@@ -58,23 +58,13 @@ export const userRouter = createTRPCRouter({
         input.userId.toString(),
       );
 
-      fs.mkdir(
-        userDataDir,
-        {
-          recursive: true,
-        },
-        (err) => {
-          err &&
-            console.log("An error occurred creating the user data directory");
-        },
-      );
+      fs.mkdirSync(userDataDir, {
+        recursive: true,
+      });
 
       const profilePicturePath = path.join(userDataDir, "profile-picture.png");
 
-      fs.writeFile(profilePicturePath, input.newProfilePicture, (err) => {
-        err &&
-          console.log("An error occurred updating the user profile picture");
-      });
+      fs.writeFileSync(profilePicturePath, input.newProfilePicture);
 
       return await ctx.db.user.update({
         where: { id: input.userId },
