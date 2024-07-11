@@ -5,6 +5,6 @@ type Crumb = React.ReactNode;
 export type RouteSegment = {
   children?: Record<string, RouteSegment>;
   notClickable?: boolean;
-} & ({ crumb?: Crumb; dynamic?: never } | { dynamic: true; crumb?: never });
+} & { crumb?: Crumb; dynamic?: boolean };
 
 export type CrumbInfo = { crumb: Crumb; href: string; isClickable?: boolean };

@@ -1,4 +1,5 @@
 import { HomeIcon } from "lucide-react";
+import { ContestNameCrumb } from "./contest-name-crumb";
 import type { RouteSegment } from "./types";
 
 export const routeToCrumbsMatcher: RouteSegment = {
@@ -25,6 +26,7 @@ export const routeToCrumbsMatcher: RouteSegment = {
         },
         "[contestId]": {
           dynamic: true,
+          crumb: <ContestNameCrumb />,
         },
       },
     },

@@ -10,7 +10,7 @@ export function getCrumbs(pathname: string): CrumbInfo[] {
   ): CrumbInfo[] {
     if (segmentIndex === segments.length) return [];
 
-    const crumb = curNode.dynamic ? segments[segmentIndex] : curNode.crumb;
+    const crumb = curNode.crumb ?? segments[segmentIndex];
     const isClickable = !curNode.notClickable && !!curNode.children;
 
     const curCrumbInfo = { crumb, href, isClickable };
